@@ -5,7 +5,6 @@ import ReactDOM from "https://cdn.skypack.dev/react-dom@18.2.0?dts";
 import { AzukiWave } from './components/azukiwave.ts';
 import { useWindowSize } from './components/useWindowSize.ts';
 import { useDeviceOrientation } from './components/useDeviceOrientation.ts';
-import { playReadySound, startAzukiSound } from './components/sound.ts'
 
 const limit90 = (angle: number) => Math.min(Math.max(angle, -90), 90);
 
@@ -18,10 +17,36 @@ function App() {
   const top = orientation ? (limit90(orientation.beta) / 90 + 1) * height / 2 : height;
   const left = orientation ? (limit90(orientation.gamma) / 90 + 1) * width / 2 : width;
 
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [audioCtx, setAudioCtx] = useState();
   const [panNode, setPanNode] = useState();
   const [gainNode, setGainNode] = useState();
   const [clock, setClock] = useState(Math.random);
   useEffect(() => {
+    const _audioCtx = new window.AudioContext();
+    const request = new XMLHttpRequest();
+    request.open('GET', 'azuki.wav', true);
+    request.responseType = 'arraybuffer';
+    request.onload = () => {
+      const audioData = request.response;
+      const source = _audioCtx.createBufferSource();
+      _audioCtx.decodeAudioData(audioData).then((decodedData) => {
+        source.buffer = decodedData;
+        source.loop = true;
+        const _gainNode = _audioCtx.createGain();
+        source.connect(_gainNode);
+        _gainNode.connect(_audioCtx.destination);
+        const _panNode = _audioCtx.createStereoPanner();
+        source.connect(_panNode);
+        _panNode.connect(_gainNode);
+        source.start();
+        _audioCtx.suspend();
+        setAudioCtx(_audioCtx);
+        setPanNode(_panNode);
+        setGainNode(_gainNode);
+      });
+    };
+    request.send();
     const intervalId = setInterval(() => { setClock(Math.random()); }, 50);
     return () => { clearInterval(intervalId); };
   }, []);
@@ -48,9 +73,9 @@ function App() {
           Enable orientation sensor
         </button>
       }
-      {!panNode &&
-        <button onClick={ () => { startAzukiSound(setPanNode, setGainNode); } }>
-          Enable sound
+      {!audioEnabled &&
+        <button onClick={ () => { audioCtx.resume(); setAudioEnabled(true); } }>
+          Start sound
         </button>
       }
       <div className="orientation-mark" style={{ top, left }}></div>
