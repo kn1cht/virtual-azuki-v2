@@ -49,7 +49,7 @@ function App() {
         </button>
       }
       {!panNode &&
-        <button onClick={ () => { playReadySound(() => startAzukiSound(setPanNode, setGainNode)); } }>
+        <button onClick={ () => { startAzukiSound(setPanNode, setGainNode); } }>
           Enable sound
         </button>
       }

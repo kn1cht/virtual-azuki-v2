@@ -1,14 +1,3 @@
-export const playReadySound = (onPlayEnd: () => void) => {
-  const audioCtx = new window.AudioContext();
-  const oscillator = audioCtx.createOscillator();
-  oscillator.type = "triangle";
-  oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
-  oscillator.connect(audioCtx.destination);
-  oscillator.onended = () => onPlayEnd();
-  oscillator.start(0);
-  oscillator.stop(0);
-};
-
 export const startAzukiSound = (
   setPanNode: (panNode: StereoPannerNode) => void,
   setGainNode: (gainNode: GainNode) => void
