@@ -16,6 +16,11 @@ h1 {
   height: 100%;
 }
 
+h1 {
+  text-align: center;
+  width: 100%;
+}
+
 .nav {
   min-height: 3rem;
   display: flex;
@@ -29,23 +34,31 @@ h1 {
   h1 {
     min-inline-size: 100px;
   }
-  button {
-    margin: 0 15px;
-  }
 }
 
+button {
+  background-color: #089f3a;
+  border-radius: 5px;
+  color: white;
+  font-size: 1.5em;
+  height: 3em;
+  margin: 10px;
+}
 .orientation-mark {
   position: absolute;
-  
+
   &::before {
     content: '';
     display: inline-block;
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #393939;
+    background-color: #7e7e7e;
     position: absolute;
     top: 4px;
     left: -4px;
   }
+}
+.notice {
+  margin: 10px;
 }
