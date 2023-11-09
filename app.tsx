@@ -59,7 +59,7 @@ function App() {
     if(!panNode) return;
     const ratio = xAzuki[1] != 0 ? xAzuki[0] / xAzuki[1] : 1;
     const balance = - 2 / (ratio + 1) + 1;
-    const balanceSigmoid = 1 / (1 + Math.E ** (- 5 * balance));
+    const balanceSigmoid = 2 / (1 + Math.E ** (- 5 * balance)) - 1;
     setRatio(ratio);
     setBalance(balanceSigmoid);
     const volume = ((xAzuki[1] + xAzuki[0]) * 0.7 + (yAzuki[1] + yAzuki[0]) * 0.3) / 100.0;
