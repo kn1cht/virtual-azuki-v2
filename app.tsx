@@ -57,7 +57,7 @@ function App() {
     const xAzuki = xAxisAzuki.moveFromAngle(limit90(orientation ? orientation.beta : 0));
     const yAzuki = yAxisAzuki.moveFromAngle(limit90(orientation ? orientation.gamma : 0));
     if(!panNode) return;
-    const ratio = xAzuki[1] != 0 ? xAzuki[0] / xAzuki[1] : 1;
+    const ratio = xAzuki[0] != 0 ? xAzuki[1] / xAzuki[0] : 1;
     const balance = - 2 / (ratio + 1) + 1;
     const balanceSigmoid = 2 / (1 + Math.E ** (- 5 * balance)) - 1;
     setRatio(ratio);
