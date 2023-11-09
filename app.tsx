@@ -16,6 +16,8 @@ function App() {
   const { orientation, requestAccess } = useDeviceOrientation();
   const top = orientation ? (limit90(orientation.beta) / 90 + 1) * height / 2 : height;
   const left = orientation ? (limit90(orientation.gamma) / 90 + 1) * width / 2 : width;
+  const [ratioVal, setRatio] = useState();
+  const [balanceVal, setBalance] = useState();
 
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [audioCtx, setAudioCtx] = useState();
@@ -55,10 +57,13 @@ function App() {
     const xAzuki = xAxisAzuki.moveFromAngle(limit90(orientation ? orientation.beta : 0));
     const yAzuki = yAxisAzuki.moveFromAngle(limit90(orientation ? orientation.gamma : 0));
     if(!panNode) return;
-    const ratio = xAzuki[0] != 0 ? xAzuki[1] / xAzuki[0] : 1e6;
+    const ratio = xAzuki[1] != 0 ? xAzuki[0] / xAzuki[1] : 1;
     const balance = - 2 / (ratio + 1) + 1;
+    const balanceSigmoid = 1 / (1 + Math.E ** (- 5 * balance));
+    setRatio(ratio);
+    setBalance(balanceSigmoid);
     const volume = ((xAzuki[1] + xAzuki[0]) * 0.7 + (yAzuki[1] + yAzuki[0]) * 0.3) / 100.0;
-    panNode.pan.value = balance; // from -1 to 1
+    panNode.pan.value = balanceSigmoid; // from -1 to 1
     gainNode.gain.value = Math.max(0, volume);
   }, [clock]);
 
@@ -86,17 +91,15 @@ function App() {
         </ul>
       </div>
       {/* debug */}
-      {/* <ul>
+      <ul>
         <li>ɑ: {orientation && orientation.alpha}</li>
         <li>β: {orientation && orientation.beta}</li>
         <li>γ: {orientation && orientation.gamma}</li>
         <li>top: {orientation && top}px</li>
         <li>left: {orientation && left}px</li>
-        <li>xa: {orientation && xAzuki[0]}</li>
-        <li>xb: {orientation && xAzuki[1]}</li>
-        <li>ya: {orientation && yAzuki[0]}</li>
-        <li>yb: {orientation && yAzuki[1]}</li>
-      </ul> */}
+        <li>ratio: {orientation && ratioVal}</li>
+        <li>balance: {orientation && balanceVal}</li>
+      </ul>
       <h1 style={{ position: 'absolute', bottom: '10px' }}>↓ right</h1>
     </div>
   );
